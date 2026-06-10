@@ -1,16 +1,17 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseGuards, Patch, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { BooksService } from './books.service';
-import { title } from 'process';
 
 @UseGuards(JwtAuthGuard)
 @Controller('books')
 export class BooksController {
     constructor(private readonly booksService: BooksService) { }
 
+    @UseInterceptors(FileInterceptor('image'))
     @Post()
-    async createBook(@Body() dto: {title: string, description: string}){
-        return await this.booksService.createBook(dto.title, dto.description)
+    async createBook(@UploadedFile() image: Express.Multer.File, @Body() dto: {title: string, description: string}){
+        return await this.booksService.createBook(image, dto.title, dto.description)
     }
 
     @Get()
@@ -23,9 +24,10 @@ export class BooksController {
         return await this.booksService.getBook(id);
     }
 
+    @UseInterceptors(FileInterceptor('image'))
     @Patch(':id')
-    async updateBook(@Param('id') id: string, @Body() dto: {title?: string; description?: string}){
-        return await this.booksService.updateBook(id, dto.title, dto.description)
+    async updateBook(@UploadedFile() image: Express.Multer.File, @Param('id') id: string, @Body() dto: {title?: string; description?: string}){
+        return await this.booksService.updateBook(id, image, dto.title, dto.description)
     }
 
     @Delete(':id')

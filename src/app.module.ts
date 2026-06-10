@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
+import { R2Module } from './r2/r2.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -26,7 +27,8 @@ import configuration from './config/configuration';
       }
     }),
     PrismaModule,
-    UsersModule
+    UsersModule,
+    R2Module
   ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService],
